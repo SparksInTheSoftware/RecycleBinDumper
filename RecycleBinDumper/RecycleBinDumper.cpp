@@ -72,6 +72,11 @@ class CharBuffer
 			this->position = 0;
 			}
 
+		~CharBuffer()
+			{
+			delete this->buffer;
+			}
+
 		void PrintLine()
 			{
 			wprintf(L"%s\n", buffer);
@@ -148,6 +153,8 @@ int __cdecl wmain(int argc, const wchar_t** argv)
 		// Look for the Recycle Bin information files.
 		ForeachFile(L".", L"$I*", PrintRecycledFileInfo, lineBuffer);
 		}
+
+	delete lineBuffer;
 	}
 
 void ForeachFile(const wchar_t *szRoot, const wchar_t* szWild, EachFileHandler fn, CharBuffer *lineBuffer)
@@ -332,6 +339,8 @@ void PrintFileOrFolder(const wchar_t * szRoot, WIN32_FIND_DATA* pffd, CharBuffer
 	fileName->PrintF(L"%s\\%s", szRoot, pffd->cFileName);
 
 	PrintFileDetails(lineBuffer, fileName->buffer, &(pffd->ftCreationTime), &(pffd->ftLastWriteTime), &(pffd->ftLastAccessTime));
+	delete fileName;
+	fileName = NULL;
 
 	uint64_t size = (((uint64_t)pffd->nFileSizeHigh) << 32) + pffd->nFileSizeLow;
 	lineBuffer->PrintF(L"%lld,", size);
